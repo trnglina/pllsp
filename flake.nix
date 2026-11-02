@@ -49,6 +49,7 @@
           packages = [
             pkgs.trealla
             pkgs.scryer-prolog
+            pkgs.python3
           ];
         };
       });
