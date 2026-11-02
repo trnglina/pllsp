@@ -1,0 +1,4 @@
+x([ alpha,
+      beta,
+      gamma
+    ]).

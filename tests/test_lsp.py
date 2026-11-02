@@ -68,7 +68,7 @@ class ProtocolTests(unittest.TestCase):
                 output, stderr = self.run_server(command, data)
                 self.assertEqual([r["id"] for r in output], [0, 1, 2, 3, 4, 5])
                 self.assertEqual(output[0]["error"]["code"], -32002)
-                self.assertEqual(output[1]["result"]["capabilities"], {})
+                self.assertTrue(output[1]["result"]["capabilities"]["documentFormattingProvider"])
                 self.assertEqual(output[2]["error"]["code"], -32600)
                 self.assertEqual(output[3]["error"]["code"], -32601)
                 self.assertIsNone(output[4]["result"])
