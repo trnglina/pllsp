@@ -25,23 +25,32 @@
     {
       packages = eachSystem (
         pkgs:
-        nixpkgs.lib.mapAttrs' (
-          name: load:
-          nixpkgs.lib.nameValuePair "pllsp-${name}" (
-            pkgs.writeShellScriptBin "pllsp-${name}" ''
+        let
+          mkLauncher =
+            load:
+            pkgs.writeShellScriptBin "pllsp" ''
               cd ${src}
               exec ${load} -g main
-            ''
-          )
-        ) (entryPoint pkgs)
+            '';
+          launchers = nixpkgs.lib.mapAttrs' (
+            name: load: nixpkgs.lib.nameValuePair "pllsp-${name}" (mkLauncher load)
+          ) (entryPoint pkgs);
+        in
+        launchers
+        // {
+          default = launchers.pllsp-scryer;
+        }
       );
 
       apps = eachSystem (
         pkgs:
-        nixpkgs.lib.mapAttrs (name: pkg: {
+        let
+          packages = self.packages.${pkgs.stdenv.hostPlatform.system};
+        in
+        nixpkgs.lib.mapAttrs (_: pkg: {
           type = "app";
-          program = "${pkg}/bin/${name}";
-        }) self.packages.${pkgs.stdenv.hostPlatform.system}
+          program = "${pkg}/bin/pllsp";
+        }) packages
       );
 
       devShells = eachSystem (pkgs: {
